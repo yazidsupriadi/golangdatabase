@@ -14,3 +14,12 @@ CREATE TABLE customer
 
 insert into customer(id,name,email,balance,rating,birth_date,married) 
 values("1","Oncom","Oncom@gmail.com",100000,5,"1999-06-14",false);
+
+
+CREATE TABLE comments
+(
+    id integer NOT null AUTO_INCREMENT,
+    email varchar(100) NOT NULL,
+    comment TEXT,
+    PRIMARY KEY(ID) 
+)ENGINE = InnoDb;

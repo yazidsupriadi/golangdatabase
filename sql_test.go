@@ -3,6 +3,7 @@ package golangdatabase
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -84,6 +85,60 @@ func TestExecQuerySqlComplex(t *testing.T) {
 		fmt.Println("married", married)
 		fmt.Println("created at", created_at)
 
+	}
+
+}
+
+func TestExecSqlComment(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	email := "yazidsupriadi1406@gmail.com"
+	comment := "oncom balado"
+
+	ctx := context.Background()
+	script := "INSERT INTO comments(email,comment) VALUES (?,?)"
+
+	result, err := db.ExecContext(ctx, script, email, comment) //Exec.Content for insert,update,delete
+	if err != nil {
+		panic(err)
+	}
+
+	inserId, err := result.LastInsertId()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Insert Customer to database Success with id:", inserId)
+}
+
+func TestExecPrepareStatement(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+	script := "INSERT INTO comments(email,comment) VALUES (?,?)"
+
+	stmt, err := db.PrepareContext(ctx, script)
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+
+	for i := 0; i < 10; i++ {
+
+		email := "yazid" + strconv.Itoa(i) + "@gmail.com"
+		comment := "halo semua" + strconv.Itoa(i)
+
+		result, err := db.ExecContext(ctx, email, comment)
+		if err != nil {
+			panic(err)
+		}
+		id, err := result.LastInsertId()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("success insert comment with id:", id)
 	}
 
 }
